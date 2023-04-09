@@ -1,5 +1,8 @@
 FROM python:3.7-slim-buster
 
+# Install build tools
+RUN apt-get update && apt-get install -y build-essential
+
 # Set the working directory to /app
 WORKDIR /app
 
