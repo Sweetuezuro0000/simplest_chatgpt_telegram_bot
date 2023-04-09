@@ -75,7 +75,7 @@ To run the bot in Docker, follow these steps:
 
 6. Run the Docker container:
 
-`docker run --env-file tokens.env simplest-chatgpt-bot`
+`docker run simplest-chatgpt-bot`
 
 7. The bot should now be up and running!
 
