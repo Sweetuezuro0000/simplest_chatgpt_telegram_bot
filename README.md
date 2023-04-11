@@ -27,6 +27,14 @@ This is a Telegram bot that generates responses to messages using the OpenAI GPT
 
 Replace <your_telegram_bot_token> with your actual Telegram bot token, <your_openai_api_key> with your actual OpenAI API key, and <the_id_of_the_gpt_model_you_want_to_use> with the ID of the GPT model you want to use (it's text-davinci-003 by default).
 
+To create a list of allowed users, you can edit a text file called "allowed_users.txt" and write one username per line.
+For example:
+'alice' 
+'bob' 
+'carl'
+
+To allow everyone to chat, leave this file empty.
+
 ## Usage
 
 1. Start the bot by running the bot.py script:
@@ -68,6 +76,14 @@ To run the bot in Docker, follow these steps:
 `OPENAI_MODEL_ID=<the_id_of_the_gpt_model_you_want_to_use>`
 
 *Replace <your_telegram_bot_token> with your actual Telegram bot token, <your_openai_api_key> with your actual OpenAI API key, and <the_id_of_the_gpt_model_you_want_to_use> with the ID of the GPT model you want to use (it's text-davinci-003 by default).*
+
+To create a list of allowed users, you can edit a text file called "allowed_users.txt" and write one username per line.
+For example:
+'alice' 
+'bob' 
+'carl'
+
+To allow everyone to chat, leave this file empty.
 
 5. Build the Docker image:
  
