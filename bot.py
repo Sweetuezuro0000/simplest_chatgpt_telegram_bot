@@ -18,6 +18,21 @@ OPENAI_MODEL_ID = os.environ.get("OPENAI_MODEL_ID")
 openai.api_key = OPENAI_API_KEY
 chat_history = {}
 
+def is_allowed_user(username):
+    """
+    Checks if the given username is allowed to use the bot.
+    Returns True if the user is allowed, False otherwise.
+    """
+    # Read the list of allowed usernames from a file
+    with open('allowed_users.txt', 'r') as f:
+        allowed_users = [line.strip() for line in f.readlines()]
+
+    # If the list is empty, everyone is allowed
+    if not allowed_users:
+        return True
+
+    # Check if the user is in the list of allowed usernames
+    return username in allowed_users
 
 def start(update, context):
     """Send a greeting message and the available commands to the user."""
@@ -27,12 +42,17 @@ def start(update, context):
 def generate_response(update, context):
     """Generate a response message using OpenAI API."""
     message = update.message.text
-    if chat_history.get(update.message.chat_id) is None:
-        chat_history[update.message.chat_id] = []
-    chat_history[update.message.chat_id].append(message)
-    response = generate_text(chat_history[update.message.chat_id])
-    update.message.reply_text(response)
-    chat_history[update.message.chat_id].append(response)
+    username = update.message.from_user.username
+
+    if is_allowed_user(username):
+        if chat_history.get(update.message.chat_id) is None:
+            chat_history[update.message.chat_id] = []
+        chat_history[update.message.chat_id].append(message)
+        response = generate_text(chat_history[update.message.chat_id])
+        update.message.reply_text(response)
+        chat_history[update.message.chat_id].append(response)
+    else:
+        update.message.reply_text("Sorry, you are not allowed to use this bot.")
 
 
 def new_conversation(update, context):
@@ -56,10 +76,10 @@ def generate_text(chat_history):
     response = openai.Completion.create(
         engine=OPENAI_MODEL_ID,
         prompt=prompt,
-        max_tokens=60,
+        max_tokens=2048,  # The maximum number of tokens per request ranges from 2048 for the free plan to 20480 for the most expensive plan. 
         n=1,
         stop=None,
-        temperature=0.5,
+        temperature=0.5, # This parameter controls the "creativity" or randomness of the generated text (0.5 is a moderate value that balances creativity with coherence)
     )
     message = response.choices[0].text.strip()
     return message
