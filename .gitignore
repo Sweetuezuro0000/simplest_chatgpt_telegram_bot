@@ -3,5 +3,6 @@ __pycache__/
 *.py[cod]
 
 # Test
-my_tokens.env
 tbot.py
+private/my_tokens.env
+private/my_allowed_users.txt

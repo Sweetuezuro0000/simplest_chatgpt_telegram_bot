@@ -12,14 +12,17 @@ This is a Telegram bot that generates responses to messages using the OpenAI GPT
 ## Installation
 
 1. Clone the repository:
-
-`git clone https://github.com/51n1au5k1/implest_chatgpt_telegram_bot.git`
-
+    ```bash
+    git clone https://github.com/51n1au5k1/implest_chatgpt_telegram_bot.git
+    ```
 2. Install the required packages:
-
-`pip install -r requirements.txt`
-
-3. Edit a tokens.env file in the root of the project with the following contents:
+    ```bash
+    pip install -r requirements.txt
+    ```
+3. Edit a tokens.env file in the 'private' folder of the project with the following contents
+    ```bash
+    nano private/tokens.env
+    ```
 
 `TELEGRAM_BOT_TOKEN=<your_telegram_bot_token>`  
 `OPENAI_API_KEY=<your_openai_api_key>`  
@@ -28,18 +31,28 @@ This is a Telegram bot that generates responses to messages using the OpenAI GPT
 Replace <your_telegram_bot_token> with your actual Telegram bot token, <your_openai_api_key> with your actual OpenAI API key, and <the_id_of_the_gpt_model_you_want_to_use> with the ID of the GPT model you want to use (it's text-davinci-003 by default).
 
 To create a list of allowed users, you can edit a text file called "allowed_users.txt" and write one username per line.
-For example:
-'alice' 
-'bob' 
-'carl'
+    ```bash 
+    nano private/allowed_users.txt
+    ```
+
+For example:  
+`alice`  
+`bob`  
+`carl`  
 
 To allow everyone to chat, leave this file empty.
 
+4. If you're using a cloud to run the bot, change the permissions so that only you can read and write to it:
+    ```bash
+    chmod 600 ~/private/tokens.env
+    chmod 600 ~/private/allowed_users.txt
+    ```
 ## Usage
 
 1. Start the bot by running the bot.py script:
-
-`python bot.py`
+    ```bash
+    python bot.py
+    ```
 
 2. Open Telegram and find your bot by its username.
 
@@ -47,8 +60,6 @@ To allow everyone to chat, leave this file empty.
 
 
 The bot responds to the following commands:
-
-  
 
 *  `/new` - Start a new conversation.
 *  `/stop` - Stop the current conversation and delete context.
@@ -63,35 +74,47 @@ To run the bot in Docker, follow these steps:
 
 2. Clone the repository:
 
-`git clone https://github.com/51n1au5k1/simplest_chatgpt_telegram_bot.git`
+    ```bash
+    git clone https://github.com/51n1au5k1/simplest_chatgpt_telegram_bot.git
+    ```
 
 3. Navigate to the project directory:
+    ```bash
+    cd simplest_chatgpt_telegram_bot
+    ```
 
-`cd simplest_chatgpt_telegram_bot`
 
-4. Edit a tokens.env file in the root of the project with the following contents:
+4. Edit a tokens.env file in the 'private' folder of the project with the following contents
+    ```bash
+    nano private/tokens.env
+    ```
 
 `TELEGRAM_BOT_TOKEN=<your_telegram_bot_token>`  
 `OPENAI_API_KEY=<your_openai_api_key>`  
 `OPENAI_MODEL_ID=<the_id_of_the_gpt_model_you_want_to_use>`
 
-*Replace <your_telegram_bot_token> with your actual Telegram bot token, <your_openai_api_key> with your actual OpenAI API key, and <the_id_of_the_gpt_model_you_want_to_use> with the ID of the GPT model you want to use (it's text-davinci-003 by default).*
+Replace <your_telegram_bot_token> with your actual Telegram bot token, <your_openai_api_key> with your actual OpenAI API key, and <the_id_of_the_gpt_model_you_want_to_use> with the ID of the GPT model you want to use (it's text-davinci-003 by default).
 
 To create a list of allowed users, you can edit a text file called "allowed_users.txt" and write one username per line.
-For example:
-'alice' 
-'bob' 
-'carl'
+    ```bash
+    nano private/allowed_users.txt
+    ```
+For example:  
+`alice`  
+`bob`  
+`carl`  
 
 To allow everyone to chat, leave this file empty.
 
 5. Build the Docker image:
- 
-`docker build -t simplest-chatgpt-bot .`
+    ```bash
+    docker build -t simplest-chatgpt-bot .
+    ```
 
 6. Run the Docker container:
-
-`docker run simplest-chatgpt-bot`
+    ```bash
+    docker run simplest-chatgpt-bot
+    ```
 
 7. The bot should now be up and running!
 
