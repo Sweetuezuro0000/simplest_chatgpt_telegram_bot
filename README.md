@@ -31,7 +31,7 @@ This is a Telegram bot that generates responses to messages using the OpenAI GPT
 Replace <your_telegram_bot_token> with your actual Telegram bot token, <your_openai_api_key> with your actual OpenAI API key, and <the_id_of_the_gpt_model_you_want_to_use> with the ID of the GPT model you want to use (it's text-davinci-003 by default).
 
 To create a list of allowed users, you can edit a text file called "allowed_users.txt" and write one username per line.
-    ```bash 
+    ```bash
     nano private/allowed_users.txt
     ```
 
@@ -99,6 +99,7 @@ To create a list of allowed users, you can edit a text file called "allowed_user
     ```bash
     nano private/allowed_users.txt
     ```
+
 For example:  
 `alice`  
 `bob`  
