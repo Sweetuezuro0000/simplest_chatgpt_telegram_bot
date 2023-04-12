@@ -15,7 +15,7 @@ The bot responds to any message sent to it by generating a response using the la
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/51n1au5k1/implest_chatgpt_telegram_bot.git
+    git clone https://github.com/51n1au5k1/simplest_chatgpt_telegram_bot.git
     ```
 2. Install the required packages:
     ```bash
@@ -34,7 +34,7 @@ Replace <your_telegram_bot_token> with your actual Telegram bot token, <your_ope
 
 To create a list of allowed users, you can edit a text file called "allowed_users.txt" and write one username per line.
     
-            nano private/allowed_users.txt
+        nano private/allowed_users.txt
     
 
 For example:  
@@ -99,7 +99,7 @@ Replace <your_telegram_bot_token> with your actual Telegram bot token, <your_ope
 
 To create a list of allowed users, you can edit a text file called "allowed_users.txt" and write one username per line.
     
-        nano private/allowed_users.txt
+    nano private/allowed_users.txt
     
 
 For example:  
