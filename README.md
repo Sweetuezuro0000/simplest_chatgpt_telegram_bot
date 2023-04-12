@@ -1,6 +1,8 @@
 # Simplest ChatGPT Telegram Bot
 
-This is a Telegram bot that generates responses to messages using the OpenAI GPT-3.5 API. It uses the python-telegram-bot library to interface with the Telegram API.
+This is a Python script that sets up a Telegram bot using the python-telegram-bot library, which communicates with OpenAI's GPT-3 API to generate responses to user messages.
+
+The bot responds to any message sent to it by generating a response using the last five messages in the conversation history as a prompt for the GPT-3 API. The bot can also start a new conversation, stop the current conversation and delete context, and display a list of available commands. The list of allowed users is read from a file and can be configured to limit access to the bot.
 
 ## Requirements
 
@@ -31,9 +33,9 @@ This is a Telegram bot that generates responses to messages using the OpenAI GPT
 Replace <your_telegram_bot_token> with your actual Telegram bot token, <your_openai_api_key> with your actual OpenAI API key, and <the_id_of_the_gpt_model_you_want_to_use> with the ID of the GPT model you want to use (it's text-davinci-003 by default).
 
 To create a list of allowed users, you can edit a text file called "allowed_users.txt" and write one username per line.
-    ```bash
-    nano private/allowed_users.txt
-    ```
+    
+            nano private/allowed_users.txt
+    
 
 For example:  
 `alice`  
@@ -96,9 +98,9 @@ To run the bot in Docker, follow these steps:
 Replace <your_telegram_bot_token> with your actual Telegram bot token, <your_openai_api_key> with your actual OpenAI API key, and <the_id_of_the_gpt_model_you_want_to_use> with the ID of the GPT model you want to use (it's text-davinci-003 by default).
 
 To create a list of allowed users, you can edit a text file called "allowed_users.txt" and write one username per line.
-    ```bash
-    nano private/allowed_users.txt
-    ```
+    
+        nano private/allowed_users.txt
+    
 
 For example:  
 `alice`  
