@@ -4,6 +4,12 @@ This is a Python script that sets up a Telegram bot using the python-telegram-bo
 
 The bot responds to any message sent to it by generating a response using the last five messages in the conversation history as a prompt for the GPT-3 API. The bot can also start a new conversation, stop the current conversation and delete context, and display a list of available commands. The list of allowed users is read from a file and can be configured to limit access to the bot.
 
+## Update April, 13 2023
+* Added support for loading configuration from a file
+* Implemented a feature to restrict bot access based on user ID
+* Improved error handling and logging
+
+
 ## Requirements
 
 * Python 3.7 or higher
@@ -38,16 +44,17 @@ To create a list of allowed users, you can edit a text file called "allowed_user
     
 
 For example:  
-`alice`  
-`bob`  
-`carl`  
+`546512`  
+`1324654`  
+`8945313`  
 
 To allow everyone to chat, leave this file empty.
 
 4. If you're using a cloud to run the bot, change the permissions so that only you can read and write to it:
     ```bash
-    chmod 600 ~/private/tokens.env
-    chmod 600 ~/private/allowed_users.txt
+    chmod 600 private/tokens.env
+    chmod 600 private/allowed_users.txt
+    chmod 600 private/config.env
     ```
 ## Usage
 
@@ -103,9 +110,9 @@ To create a list of allowed users, you can edit a text file called "allowed_user
     
 
 For example:  
-`alice`  
-`bob`  
-`carl`  
+`561653154`  
+`561355131`  
+`556513`  
 
 To allow everyone to chat, leave this file empty.
 
@@ -126,7 +133,6 @@ Note: If you encounter any issues while running the bot in Docker, please check 
   
 
 ## Contributing
-
   
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.

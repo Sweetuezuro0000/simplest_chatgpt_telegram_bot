@@ -1,96 +1,138 @@
 import os
 import openai
-import telegram
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+from telegram import Update, KeyboardButton, ReplyKeyboardMarkup
+from telegram.ext import Updater, CommandHandler, MessageHandler, CallbackContext, Filters
 from dotenv import load_dotenv
+from typing import List
+import logging
 
-# Load environment variables from tokens.env file
-load_dotenv('private/tokens.env')
+load_dotenv('private/my_tokens.env')
 
-# Set up Telegram bot
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
-bot = telegram.Bot(token=TELEGRAM_BOT_TOKEN)
-
-# Set up OpenAI API client
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 OPENAI_MODEL_ID = os.environ.get("OPENAI_MODEL_ID")
 openai.api_key = OPENAI_API_KEY
 chat_history = {}
 
-def is_allowed_user(username):
+
+def load_allowed_users() -> List[int]:
     """
-    Checks if the given username is allowed to use the bot.
-    Returns True if the user is allowed, False otherwise.
+    Description: Loads and returns a list of allowed user IDs from a file.
+    Returns: List of integers representing allowed user IDs.
     """
     try:
-        # Read the list of allowed usernames from a file
         with open('private/allowed_users.txt', 'r') as f:
-            allowed_users = [line.strip() for line in f.readlines()]
-
-        # If the list is empty, everyone is allowed
-        if not allowed_users:
-            return True
-
-        # Check if the user is in the list of allowed usernames
-        return username in allowed_users
-
+            return [int(line.strip()) for line in f.readlines()]
     except FileNotFoundError:
-        print("Allowed users file not found.")
-        return False
-
+        logging.warning("Allowed users file not found.")
+        return []
     except Exception as e:
-        print("Error occurred while checking allowed users:", e)
-        return False
+        logging.error("Error occurred while loading allowed users:", e)
+        return []
 
 
-def start(update, context):
-    """Send a greeting message and the available commands as buttons to the user."""
+ALLOWED_USERS = load_allowed_users()
+
+
+def is_allowed_user(user_id: int) -> bool:
+    """
+    Description: Checks if the given user ID is in the list of allowed user IDs.
+    Parameters: user_id (integer) - the user ID to check.
+    Returns: True if the user is allowed, False otherwise.
+    """
+    if not ALLOWED_USERS:
+        return True
+    return user_id in ALLOWED_USERS
+
+
+def load_config() -> dict:
+    """
+    Description: Loads and returns configuration settings from an environment file.
+    Returns: Dictionary containing configuration settings.
+    """
+    try:
+        load_dotenv("private/config.env")
+        config = os.environ
+        return config
+    except FileNotFoundError:
+        logging.error("Config file not found.")
+        return {}
+    except Exception as e:
+        logging.error("Error occurred while loading config: %s", e)
+        return {}
+
+
+
+def start(update: Update, context: CallbackContext) -> None:
+    """
+    Description: Handles the /start command by sending a welcome message and displaying a set of available commands.
+    Parameters: update (telegram.Update) - the incoming message update, context (telegram.ext.CallbackContext) - context object to pass extra data.
+    Returns: None.
+    """
     buttons = [
-        [telegram.KeyboardButton("/new"), telegram.KeyboardButton("/stop")],
-        [telegram.KeyboardButton("/help")]
+        [KeyboardButton("/new"), KeyboardButton("/stop")],
+        [KeyboardButton("/help")]
     ]
-    reply_markup = telegram.ReplyKeyboardMarkup(buttons, resize_keyboard=True, one_time_keyboard=True)
+    reply_markup = ReplyKeyboardMarkup(buttons, resize_keyboard=True, one_time_keyboard=True)
     update.message.reply_text(
         "Hello! I'm a Simplest ChatGPT bot. Send me a message and I'll try to respond. \n\nAvailable commands:\n/new - Start a new conversation\n/stop - Stop the current conversation and delete context\n/help - Show this help message",
         reply_markup=reply_markup
     )
 
-def generate_response(update, context):
-    """Generate a response message using OpenAI API."""
-    message = update.message.text
-    username = update.message.from_user.username
 
-    if is_allowed_user(username):
+def generate_response(update: Update, context: CallbackContext) -> None:
+    """
+    Description: Generates a response message using OpenAI's GPT-3 language model and sends it to the user.
+    Parameters: update (telegram.Update) - the incoming message update, context (telegram.ext.CallbackContext) - context object to pass extra data.
+    Returns: None.
+    """
+    user_id = update.message.from_user.id
+
+    if is_allowed_user(user_id):
         if chat_history.get(update.message.chat_id) is None:
             chat_history[update.message.chat_id] = []
-        chat_history[update.message.chat_id].append(message)
+        chat_history[update.message.chat_id].append(update.message.text)
 
         prompt = "\n".join(chat_history[update.message.chat_id][-5:])
-        response = openai.Completion.create(
-            engine=OPENAI_MODEL_ID,
-            prompt=prompt,
-            max_tokens=2048, # The maximum number of tokens per request ranges from 2048 for the free plan to 20480 for the most expensive plan. 
-            n=1,
-            stop=None,
-            temperature=0.5, # This parameter controls the "creativity" or randomness of the generated text (0.5 is a moderate value that balances creativity with coherence)
-        )
-        message = response.choices[0].text.strip()
+        config = load_config()
+        try:
+            response = openai.Completion.create(
+                engine=config.get("OPENAI_MODEL_ID", ""),
+                prompt=prompt,
+                max_tokens=int(config.get("MAX_TOKENS", 2048)),
+                n=int(config.get("N", 1)),
+                stop=config.get("STOP", None),
+                temperature=float(config.get("TEMPERATURE", 0.5)),
+            )
+            message = response.choices[0].text.strip()
 
-        update.message.reply_text(message)
+            update.message.reply_text(message)
 
-        chat_history[update.message.chat_id].append(message)
+            chat_history[update.message.chat_id].append(message)
+        except openai.Error as e:
+            logging.error(f"OpenAI API request failed: {e}")
+            update.message.reply_text("Sorry, an error occurred while processing your request.")
     else:
         update.message.reply_text("Sorry, you are not allowed to use this bot.")
 
 
-def new_conversation(update, context):
-    """Start a new conversation by clearing the chat history."""
+
+def new_conversation(update: Update, context: CallbackContext) -> None:
+    """
+    Description: Handles the /new command by starting a new conversation and clearing the chat history.
+    Parameters: update (telegram.Update) - the incoming message update, context (telegram.ext.CallbackContext) - context object to pass extra data.
+    Returns: None.
+    """
     chat_history[update.message.chat_id] = []
     update.message.reply_text("Starting a new conversation. Send me a message and I'll try to respond.")
 
 
-def stop_conversation(update, context):
-    """Stop the current conversation by deleting the chat history."""
+def stop_conversation(update: Update, context: CallbackContext) -> None:
+    """
+    Description: Handles the /stop command by stopping the current conversation and deleting the chat history.
+    Parameters: update (telegram.Update) - the incoming message update, context (telegram.ext.CallbackContext) - context object to pass extra data.
+    Returns: None.
+    """
     if chat_history.get(update.message.chat_id) is not None:
         chat_history[update.message.chat_id] = []
         update.message.reply_text("Conversation context has been deleted.")
@@ -98,37 +140,31 @@ def stop_conversation(update, context):
         update.message.reply_text("There is no conversation context to delete.")
 
 
-def help_command(update, context):
-    """Send the available commands to the user."""
-    if context.args:
-        command = context.args[0]
-        if command == '/new':
-            help_message = 'Start a new conversation by typing /new'
-        elif command == '/stop':
-            help_message = 'Stop the current conversation and delete context by typing /stop'
-        elif command == '/help':
-            help_message = 'Show the available commands by typing /help'
-        else:
-            help_message = 'Sorry, that command is not recognized. Please type /help for a list of available commands.'
-    else:
-        help_message = 'Available commands:\n/new - Start a new conversation\n/stop - Stop the current conversation and delete context\n/help - Show this help message'
-
+def help_command(update: Update, context: CallbackContext) -> None:
+    """
+    Description: Handles the /help command by sending a help message that lists the available commands.
+    Parameters: update (telegram.Update) - the incoming message update, context (telegram.ext.CallbackContext) - context object to pass extra data.
+    Returns: None.
+    """
+    help_message = 'Available commands:\n/new - Start a new conversation\n/stop - Stop the current conversation and delete context\n/help - Show this help message'
     update.message.reply_text(help_message)
 
 
-def main():
-    """Set up and start the Telegram bot."""
-    # Set up Telegram bot updater
-    updater = Updater(TELEGRAM_BOT_TOKEN, use_context=True)
+def main() -> None:
+    """
+    Description: Starts the Telegram bot and sets up the necessary handlers.
+    Returns: None.
+    """
+    logging.basicConfig(filename='chatbot.log', level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    
+    updater = Updater(TELEGRAM_BOT_TOKEN)
 
-    # Set up command handlers
     start_handler = CommandHandler("start", start)
     message_handler = MessageHandler(Filters.text & ~Filters.command, generate_response)
     help_handler = CommandHandler("help", help_command)
     new_handler = CommandHandler("new", new_conversation)
     stop_handler = CommandHandler("stop", stop_conversation)
 
-    # Add handlers to updater
     dispatcher = updater.dispatcher
     dispatcher.add_handler(start_handler)
     dispatcher.add_handler(message_handler)
@@ -136,9 +172,9 @@ def main():
     dispatcher.add_handler(new_handler)
     dispatcher.add_handler(stop_handler)
 
-    # Start the Bot
     updater.start_polling()
     updater.idle()
+
 
 if __name__ == '__main__':
     main()
