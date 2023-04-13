@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from typing import List
 import logging
 
-load_dotenv('private/my_tokens.env')
+load_dotenv('private/tokens.env')
 
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
