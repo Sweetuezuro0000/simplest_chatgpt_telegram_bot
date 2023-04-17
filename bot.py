@@ -16,11 +16,16 @@ chat_history = {}
 
 
 def load_allowed_users() -> List[int]:
+def is_allowed_user(user_id):
+    print("Checking user ID:", user_id)
     """
     Description: Loads and returns a list of allowed user IDs from a file.
     Returns: List of integers representing allowed user IDs.
+    Checks if the given user ID is allowed to use the bot.
+    Returns True if the user is allowed, False otherwise.
     """
     try:
+        # Read the list of allowed user IDs from a file
         with open('private/allowed_users.txt', 'r') as f:
             return [int(line.strip()) for line in f.readlines()]
     except FileNotFoundError:
@@ -33,6 +38,7 @@ def load_allowed_users() -> List[int]:
 
 ALLOWED_USERS = load_allowed_users()
 
+            allowed_users = [int(line.strip()) for line in f.readlines()]
 
 def is_allowed_user(user_id: int) -> bool:
     """
@@ -44,6 +50,8 @@ def is_allowed_user(user_id: int) -> bool:
         return True
     return user_id in ALLOWED_USERS
 
+        # Check if the user's ID is in the list of allowed user IDs
+        return user_id in allowed_users
 
 def load_config() -> dict:
     """
@@ -69,6 +77,8 @@ def start(update: Update, context: CallbackContext) -> None:
     Parameters: update (telegram.Update) - the incoming message update, context (telegram.ext.CallbackContext) - context object to pass extra data.
     Returns: None.
     """
+def start(update, context):
+    """Send a greeting message and the available commands as buttons to the user."""
     buttons = [
         [KeyboardButton("/new"), KeyboardButton("/stop")],
         [KeyboardButton("/help")]
@@ -87,7 +97,12 @@ def generate_response(update: Update, context: CallbackContext) -> None:
     Returns: None.
     """
     user_id = update.message.from_user.id
+def generate_response(update, context):
+    """Generate a response message using OpenAI API."""
+    message = update.message.text
+    user_id = update.message.from_user.id
 
+    if is_allowed_user(user_id):
     if is_allowed_user(user_id):
         if chat_history.get(update.message.chat_id) is None:
             chat_history[update.message.chat_id] = []
@@ -114,6 +129,7 @@ def generate_response(update: Update, context: CallbackContext) -> None:
             update.message.reply_text("Sorry, an error occurred while processing your request.")
     else:
         update.message.reply_text("Sorry, you are not allowed to use this bot.")
+
 
 
 

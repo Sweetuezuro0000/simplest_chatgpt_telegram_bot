@@ -1,8 +1,39 @@
-# Byte-compiled / optimized / DLL files
+# .gitignore
+
+# Python artifacts
 __pycache__/
-*.py[cod]
+*.pyc
+*.pyo
+*.pyd
+*.pyc
+
+# Virtual environment
+venv/
+
+# Configurations and credentials
+config/credentials.json
+config/telegram-calendar-bot-383709-f3d4331313b5.json
+
+# Jupyter notebook checkpoints
+.ipynb_checkpoints/
+
+# Visual Studio Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# macOS artifacts
+.DS_Store
+
+# Temporary files
+*.tmp
+*.swp
+*.bak
+*.log
 
 # Test
+ru_bot_for_family.py
 tbot.py
 private/my_tokens.env
 private/my_allowed_users.txt
