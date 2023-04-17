@@ -3,9 +3,26 @@ import openai
 import telegram
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from dotenv import load_dotenv
+import logging
+
+# Set up logging
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logger = logging.getLogger(__name__)
 
 # Load environment variables from tokens.env file
 load_dotenv('private/tokens.env')
+
+# Load configuration from config.env file
+load_dotenv('private/config.env')
+
+# Load the configuration values from the environment variables
+MAX_TOKENS = int(os.environ.get("MAX_TOKENS", 2048))
+N = int(os.environ.get("N", 1))
+STOP = os.environ.get("STOP", None)
+if STOP == "null":
+    STOP = None
+TEMPERATURE = float(os.environ.get("TEMPERATURE", 0.5))
+
 
 # Set up Telegram bot
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
@@ -18,7 +35,7 @@ openai.api_key = OPENAI_API_KEY
 chat_history = {}
 
 def is_allowed_user(user_id):
-    print("Checking user ID:", user_id)
+    logger.info(f"Checking user ID: {user_id}")
     """
     Checks if the given user ID is allowed to use the bot.
     Returns True if the user is allowed, False otherwise.
@@ -36,11 +53,11 @@ def is_allowed_user(user_id):
         return user_id in allowed_users
 
     except FileNotFoundError:
-        print("Allowed users file not found.")
+        logger.error("Allowed users file not found.")
         return False
 
     except Exception as e:
-        print("Error occurred while checking allowed users:", e)
+        logger.error(f"Error occurred while checking allowed users: {e}")
         return False
 
 def start(update, context):
@@ -69,10 +86,10 @@ def generate_response(update, context):
         response = openai.Completion.create(
             engine=OPENAI_MODEL_ID,
             prompt=prompt,
-            max_tokens=2048, # The maximum number of tokens per request ranges from 2048 for the free plan to 20480 for the most expensive plan. 
-            n=1,
-            stop=None,
-            temperature=0.5, # This parameter controls the "creativity" or randomness of the generated text (0.5 is a moderate value that balances creativity with coherence)
+            max_tokens=MAX_TOKENS,
+            n=N,
+            stop=STOP,
+            temperature=TEMPERATURE,
         )
         message = response.choices[0].text.strip()
 
@@ -138,6 +155,7 @@ def main():
     updater.idle()
 
 if __name__ == '__main__':
-    main()
-
-
+    try:
+        main()
+    except Exception as e:
+        logger.exception(f"Unexpected error occurred: {e}")
