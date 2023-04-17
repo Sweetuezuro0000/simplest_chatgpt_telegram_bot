@@ -4,6 +4,9 @@ This is a Python script that sets up a Telegram bot using the python-telegram-bo
 
 The bot responds to any message sent to it by generating a response using the last five messages in the conversation history as a prompt for the GPT-3 API. The bot can also start a new conversation, stop the current conversation and delete context, and display a list of available commands. The list of allowed users is read from a file and can be configured to limit access to the bot.
 
+## Update April, 17 2023
+* Added command for setting from the menu
+
 ## Update April, 13 2023
 * Added support for loading configuration from a file
 * Implemented a feature to restrict bot access based on user ID
@@ -16,6 +19,13 @@ The bot responds to any message sent to it by generating a response using the la
 * A Telegram bot token (get one from @BotFather)
 * An OpenAI API key (get one from the OpenAI API dashboard)
 * python-telegram-bot version not higher than 13.15
+
+The bot responds to the following commands:
+
+*  `/new` - Start a new conversation.
+*  `/stop` - Stop the current conversation and delete context.
+*  `/settings` - Show or update user preferences by typing /settings, or /settings <key> <value> to update a setting.
+*  `/help` - Show the available commands.
 
 ## Installation
 
@@ -66,13 +76,6 @@ To allow everyone to chat, leave this file empty.
 2. Open Telegram and find your bot by its username.
 
 3. Send a message to the bot and it will respond with a generated message based on the context of the conversation.
-
-
-The bot responds to the following commands:
-
-*  `/new` - Start a new conversation.
-*  `/stop` - Stop the current conversation and delete context.
-*  `/help` - Show the available commands.
 
 
 ## Running the Bot in Docker
