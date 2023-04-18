@@ -2,7 +2,13 @@
 
 This is a Python script that sets up a Telegram bot using the python-telegram-bot library, which communicates with OpenAI's GPT-3 API to generate responses to user messages.
 
-The bot responds to any message sent to it by generating a response using the last five messages in the conversation history as a prompt for the GPT-3 API. The bot can also start a new conversation, stop the current conversation and delete context, and display a list of available commands. The list of allowed users is read from a file and can be configured to limit access to the bot.
+The bot responds to any message sent to it by generating a response using the last five messages in the conversation history as a prompt for the GPT-3 API. The bot can also start a new conversation, stop the current conversation and delete context, generate an image using DALL-E, and display a list of available commands. The list of allowed users is read from a file and can be configured to limit access to the bot.
+
+## Update April, 19 2023
+* Added support for generating images using DALL-E.
+* Split bot.py into separate files according to their role.
+* Added the ability to customize bot settings by setting environment variables.
+* Updated the README.md file to reflect these changes.
 
 ## Update April, 17 2023
 * Added command for setting from the menu
@@ -24,6 +30,7 @@ The bot responds to the following commands:
 
 *  `/new` - Start a new conversation.
 *  `/stop` - Stop the current conversation and delete context.
+*  `/image` - Generate an image using DALL-E. Usage: /image <your prompt>.
 *  `/settings` - Show or update user preferences by typing /settings, or /settings <key> <value> to update a setting.
 *  `/help` - Show the available commands.
 
@@ -47,6 +54,8 @@ The bot responds to the following commands:
 `OPENAI_MODEL_ID=<the_id_of_the_gpt_model_you_want_to_use>`
 
 Replace <your_telegram_bot_token> with your actual Telegram bot token, <your_openai_api_key> with your actual OpenAI API key, and <the_id_of_the_gpt_model_you_want_to_use> with the ID of the GPT model you want to use (it's text-davinci-003 by default).
+
+You can also customize the other settings in this file if needed.
 
 To create a list of allowed users, you can edit a text file called "allowed_users.txt" and write one username per line.
     
@@ -106,6 +115,8 @@ To run the bot in Docker, follow these steps:
 `OPENAI_MODEL_ID=<the_id_of_the_gpt_model_you_want_to_use>`
 
 Replace <your_telegram_bot_token> with your actual Telegram bot token, <your_openai_api_key> with your actual OpenAI API key, and <the_id_of_the_gpt_model_you_want_to_use> with the ID of the GPT model you want to use (it's text-davinci-003 by default).
+
+You can also customize the other settings in this file if needed.
 
 To create a list of allowed users, you can edit a text file called "allowed_users.txt" and write one username per line.
     
