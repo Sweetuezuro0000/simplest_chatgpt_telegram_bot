@@ -15,14 +15,16 @@ def start(update, context):
         "/stop - Stop the current conversation and delete context\n"
         "/settings - Show or update user preferences by typing /settings, or /settings <key> <value> to update a setting\n"
         "/help - Show this help message\n"
-        "/image - Generate an image using DALL-E. Usage: /image <your prompt>",
+        "/image - Generate an image using DALL-E. Usage: /image <your prompt>\n\n"
+        "Made with ❤️ by @sweetu_support.",
         reply_markup=reply_markup
     )
 
 def new_conversation(update, context):
     """Start a new conversation by clearing the chat history."""
     chat_history[update.message.chat_id] = []
-    update.message.reply_text("Starting a new conversation. Send me a message and I'll try to respond.")
+    update.message.reply_text("Starting a new conversation. Send me a message and I'll try to respond.\n\"
+                             "© @sweetu_support")
 
 
 def stop_conversation(update, context):
