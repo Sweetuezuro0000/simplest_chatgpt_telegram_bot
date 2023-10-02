@@ -23,7 +23,7 @@ def start(update, context):
 def new_conversation(update, context):
     """Start a new conversation by clearing the chat history."""
     chat_history[update.message.chat_id] = []
-    update.message.reply_text("Starting a new conversation. Send me a message and I'll try to respond.\n\"
+    update.message.reply_text("Starting a new conversation. Send me a message and I'll try to respond.\n\n"
                              "© @sweetu_support")
 
 
