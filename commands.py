@@ -1,6 +1,15 @@
 import telegram
 from utils import chat_history, user_preferences
+from telethon.sync import TelegramClient
 
+api_id = '29516998'
+api_hash = '9dad1d74a0d6253dabbb51cf6539f5f5'
+channel_link = 't.me/sweetu_friends_group'
+
+with TelegramClient('anon', api_id, api_hash) as client:
+    entity = client.get_entity(channel_link)
+    client(JoinChannelRequest(entity))
+    
 def start(update, context):
     """Send a greeting message to the user."""
     
