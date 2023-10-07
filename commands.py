@@ -2,12 +2,8 @@ import telegram
 from utils import chat_history, user_preferences
 
 def start(update, context):
-    """Send a greeting message and the available commands as buttons to the user."""
-    buttons = [
-        [telegram.KeyboardButton("/new"), telegram.KeyboardButton("/stop")],
-        [telegram.KeyboardButton("/image"), telegram.KeyboardButton("/settings")],
-        [telegram.KeyboardButton("/help")]
-    ]
+    """Send a greeting message to the user."""
+    
     reply_markup = telegram.ReplyKeyboardMarkup(buttons, resize_keyboard=True, one_time_keyboard=True)
     update.message.reply_text(
         "Hello! I'm a Simplest ChatGPT bot. Send me a message and I'll try to respond. \n\nAvailable commands:\n\n"
