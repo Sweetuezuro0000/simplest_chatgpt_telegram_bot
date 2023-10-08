@@ -1,10 +1,6 @@
 import telegram
 from utils import chat_history, user_preferences
-try:
-    await app.get_chat_members(-1001233685835)
-    #your action if they joined ur channel
-except UserNotParticipant:
-    await message.reply_text("join my channel first")
+
 def start(update, context):
     """Send a greeting message to the user."""
     
